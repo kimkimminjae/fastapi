@@ -1,0 +1,42 @@
+version: '3.8' # version of docker-compose
+
+
+services:
+  client:
+    container_name: kmj_client
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    restart: always
+    ports:
+      - "3001:3001"
+# 3001 포트로 들어오는 요청을 컨테이너가 expose한 3001 포토로 포트워딩된다
+#  만약 이미지를 빌드하고 cli로 컨테이너를 실행한다면 docker run -d -p 3001:3001 --name <container-name> <image-name>
+#  뒤에가 컨테이너 포트 도커파일에 expose 3001 미리 지정해놓아야함 즉 3001로 들어오는 요청을 컨테이너가 expose한 3001 포토로 포트워딩된다
+    environment:
+      - TZ=Asia/Seoul
+      - REACT_APP_API_URL=http://localhost:8000 # API URL 서버 주소
+    volumes:
+      - ./client/src:/app/src
+      - ./client/public:/app/public
+
+#    depends_on:
+#      - server
+
+#  server:
+#    container_name: server
+#    build:
+#      dockerfile: Dockerfile
+#      context: ./server
+#    restart: always
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      - TZ=Asia/Seoul
+#      - EUREKA_SERVER=http://kisa-discovery-server:8761/eureka
+#      - EUREKA_INSTANCE_IP=kisa-image-video-service
+#      - REDIS_URL=redis://kisa-cache:6379/0
+#    depends_on:
+#      - kisa-discovery-server
+#      - kisa-cache
+#      - kisa-mongodb
